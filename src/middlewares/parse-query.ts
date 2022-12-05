@@ -1,5 +1,6 @@
 import {Request} from "express";
 import {injectable} from "inversify";
+import {SortOrder} from "../types/tsTypes";
 
 
 @injectable()
@@ -16,7 +17,7 @@ export class ParseQuery {
     let code: string | undefined | null = req.query.code?.toString()
     let confirmationCode: string | undefined | null = req.query.confirmationCode?.toString()
     let sortBy: string | undefined | null = req.query.sortBy?.toString()
-    let sortDirection: string | undefined | null = req.query.sortDirection?.toString()
+    let querySortDir: any = req.query.sortDirection
 
 
     // default settings for searchNameTer, title, pageNumber, pageSize
@@ -54,8 +55,13 @@ export class ParseQuery {
       sortBy = null
     }
 
-    if (!sortDirection || sortDirection.length === 0) {
-      sortDirection = null
+    const sortOrderArr = [-1, 1, 'descending', 'desc', 'ascending', 'asc']
+    let sortDirection: SortOrder = 1;
+    if (sortOrderArr.includes(querySortDir)) {
+      sortDirection = querySortDir;
+    }
+    if (Number(querySortDir) === -1) {
+      sortDirection = -1;
     }
 
     return {
